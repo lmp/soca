@@ -15,27 +15,35 @@ module Soca
       #             `config` are interpolated.
       #
       def run(options = {})
-        file_patterns = options[:files] || '**/*.coffee'
-        files = Dir[*[file_patterns].flatten]
+        @options = options
+
         vars = {
           :env => pusher.env,
           :config => pusher.config
         }.merge(options[:vars] || {})
         Soca.logger.debug "CoffeeScript vars: #{vars.inspect}"
 
-        files.each do |file|
+        Dir[File.join(coffeescript_from, "**/*.coffee")].each do |file|
           Soca.logger.debug "Running #{file} through CoffeeScript."
-          basename = File.basename(file)
-          dir      = File.dirname(file)
-          parts    = basename.split(/\./)
-          new_file = (parts.length > 2 ? parts[0..-2].join('.') : parts[0]) + ".js"
+          basename = File.basename(file, ".coffee")
+          dir      = File.dirname(file).sub(/^#{coffeescript_from}/,
+                                            coffeescript_to)
+          new_file = basename + ".js"
 
           File.open(File.join(dir, new_file), 'w') do |f|
             f << ::CoffeeScript.compile(File.read(file), vars)
           end
-          Soca.logger.debug "Wrote to #{new_file}"
-
+          Soca.logger.debug "Wrote to #{File.join(dir, new_file)}"
         end
+      end
+
+      private
+      def coffeescript_from
+        @options.has_key?(:from) ? File.join(app_dir, @options[:from]) : File.join(app_dir, 'coffee')
+      end
+
+      def coffeescript_to
+        @options.has_key?(:to) ? File.join(app_dir, @options[:to]) : File.join(app_dir, 'js')
       end
 
     end
