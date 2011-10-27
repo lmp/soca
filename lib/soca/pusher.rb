@@ -147,7 +147,7 @@ module Soca
         while !parts.empty?
           part = parts.shift
           if parts.empty?
-            current_hash[part] = file_data
+            current_hash[part] = file_data.force_encoding("UTF-8")
           else
             current_hash[part] ||= {}
             current_hash = current_hash[part]
