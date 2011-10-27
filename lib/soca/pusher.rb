@@ -151,7 +151,11 @@ module Soca
           part = parts.shift
           if parts.empty?
             raise "the filename #{path} conflicts with a folder of that name" if current_hash[part].class == Hash
-            current_hash[part] = file_data.force_encoding("UTF-8")
+            if part =~ /.json$/
+              current_hash[part.gsub(/.json$/, '')] = JSON.parse(file_data)
+            else
+              current_hash[part] = file_data.force_encoding("UTF-8")
+            end
           else
             raise "the path of #{path} conflicts with a javascript file" if current_hash[part].class == String
             current_hash[part] ||= {}
