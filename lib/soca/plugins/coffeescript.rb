@@ -29,6 +29,7 @@ module Soca
           dir      = File.dirname(file).sub(/^#{coffeescript_from}/,
                                             coffeescript_to)
           new_file = basename + ".js"
+          FileUtils.mkdir_p(dir) unless File.exists?(dir)
 
           File.open(File.join(dir, new_file), 'w') do |f|
             f << ::CoffeeScript.compile(File.read(file), vars)
