@@ -119,7 +119,7 @@ module Soca
     end
 
     def plugin(plugin_name, options = {})
-      require "soca/plugins/#{plugin_name}"
+      require "soca/plugins/#{plugin_name}" unless Soca::Plugin.plugins[plugin_name]
       p = Soca::Plugin.plugins[plugin_name].new(self)
       p.run(options)
     end
