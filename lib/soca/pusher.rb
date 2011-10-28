@@ -112,7 +112,7 @@ module Soca
       if File.readable? hook_file_path
         logger.debug "running hook: #{hook} (#{hook_file_path})"
         Dir.chdir(app_dir) do
-          instance_eval(File.read(hook_file_path))
+          instance_eval(File.read(hook_file_path), hook_file_path, 1)
         end
         logger.debug "finished hook: #{hook} (#{hook_file_path})"
       end
