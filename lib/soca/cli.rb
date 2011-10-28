@@ -138,6 +138,8 @@ module Soca
       loop do
         changed = false
         Dir.glob(push.app_dir + '**/**') do |file|
+          # This is a hack. It works around emacs' "feature" to create lock files when modifying a buffer
+          next if File.directory?(file)
           ctime = File.ctime(file).to_i
           if ctime != files[file]
             files[file] = ctime
