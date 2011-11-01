@@ -88,6 +88,9 @@ module Soca
       logger.debug "pushing document to #{push_url}"
       put!(push_url, post_body)
       run_hook_file!(:after_push)
+    rescue => e
+      run_hook_file!(:after_push_error)
+      raise(e)
     end
 
     def purge!
