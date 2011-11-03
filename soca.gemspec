@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'compass'       , '~>0.10.5'
   s.add_dependency 'mustache'      , '~>0.11.2'
   s.add_dependency 'coffee-script' , '~> 2.1.2'
+  s.add_dependency 'haml'          , '~> 3.1'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'yard', '>= 0'

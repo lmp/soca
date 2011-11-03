@@ -4,6 +4,7 @@ PATH
     soca (0.2.0)
       coffee-script (~> 2.1.2)
       compass (~> 0.10.5)
+      haml (~> 3.1)
       jim (~> 0.3.1)
       json (~> 1.4.6)
       mime-types (~> 1.16)
