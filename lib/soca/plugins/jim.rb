@@ -11,7 +11,7 @@ module Soca
         ::Jim.logger = logger
         logger.debug "bundling js"
         bundler = ::Jim::Bundler.new(File.read(jimfile), ::Jim::Index.new(app_dir))
-        bundler.bundle!
+        bundler.bundle!(options[:bundle_name], options[:compress])
       end
 
     end
