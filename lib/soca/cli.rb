@@ -153,7 +153,7 @@ module Soca
           begin
             push.push!
           rescue => e
-            say "Error running push #{e}", :red
+            say "Error running push: #{e}", :red
           end
 
           Dir.glob(push.app_dir + '**/**') do |file|

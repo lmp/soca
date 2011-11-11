@@ -27,7 +27,11 @@ module Soca
         build_files(build_map) do |src, dest|
           Soca.logger.debug "Running #{src} through CoffeeScript."
           File.open(dest, 'w') do |f|
-            f << ::CoffeeScript.compile(File.read(src), vars)
+            begin
+              f << ::CoffeeScript.compile(File.read(src), vars)
+            rescue => e
+              raise "In #{src}: #{e}"
+            end
           end
           Soca.logger.debug "Wrote to #{dest}"
         end
