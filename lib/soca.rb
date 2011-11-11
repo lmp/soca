@@ -11,6 +11,7 @@ module Soca
   autoload :Pusher, 'soca/pusher'
   autoload :CLI, 'soca/cli'
   autoload :Plugin, 'soca/plugin'
+  autoload :BuildHelpers, 'soca/build_helpers'
 
   class << self
     attr_accessor :debug

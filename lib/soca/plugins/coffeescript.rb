@@ -3,6 +3,7 @@ require 'coffee-script'
 module Soca
   module Plugins
     class CoffeeScript < Soca::Plugin
+      include Soca::BuildHelpers
 
       name 'coffeescript'
 
@@ -23,22 +24,25 @@ module Soca
         }.merge(options[:vars] || {})
         Soca.logger.debug "CoffeeScript vars: #{vars.inspect}"
 
-        Dir[File.join(coffeescript_from, "**/*.coffee")].each do |file|
-          Soca.logger.debug "Running #{file} through CoffeeScript."
-          basename = File.basename(file, ".coffee")
-          dir      = File.dirname(file).sub(/^#{coffeescript_from}/,
-                                            coffeescript_to)
-          new_file = basename + ".js"
-          FileUtils.mkdir_p(dir) unless File.exists?(dir)
-
-          File.open(File.join(dir, new_file), 'w') do |f|
-            f << ::CoffeeScript.compile(File.read(file), vars)
+        build_files(build_map) do |src, dest|
+          Soca.logger.debug "Running #{src} through CoffeeScript."
+          File.open(dest, 'w') do |f|
+            f << ::CoffeeScript.compile(File.read(src), vars)
           end
-          Soca.logger.debug "Wrote to #{File.join(dir, new_file)}"
+          Soca.logger.debug "Wrote to #{dest}"
         end
       end
 
       private
+      def build_map
+        Dir[File.join(coffeescript_from, "**/*.coffee")].map do |src|
+          basename = File.basename(src, ".coffee")
+          dir      = File.dirname(src).sub(/^#{coffeescript_from}/, coffeescript_to)
+          dest = File.join(dir, basename + ".js")
+          [src, dest]
+        end
+      end
+
       def coffeescript_from
         @options.has_key?(:from) ? File.join(app_dir, @options[:from]) : File.join(app_dir, 'coffee')
       end

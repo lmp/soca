@@ -5,26 +5,30 @@ module Soca
     class Haml < Soca::Plugin
 
       name 'haml'
+      include Soca::BuildHelpers
 
       def run(options={})
         @options = options
 
-        Dir[File.join(haml_from, "**/*.haml")].each do |file|
-          Soca.logger.debug "Running #{file} through Haml."
-          basename = File.basename(file, ".haml")
-          dir      = File.dirname(file).sub(/^#{haml_from}/,
-                                            haml_to)
-          new_file = basename + ".html"
-          FileUtils.mkdir_p(dir) unless File.exists?(dir)
-
-          File.open(File.join(dir, new_file), 'w') do |f|
-            f << ::Haml::Engine.new(File.read(file)).render
+        build_files(build_map) do |source, dest|
+          Soca.logger.debug "Running #{source} through Haml."
+          File.open(dest, 'w') do |f|
+            f << ::Haml::Engine.new(File.read(source)).render
           end
-          Soca.logger.debug "Wrote to #{File.join(dir, new_file)}"
+          Soca.logger.debug "Wrote to #{dest}"
         end
       end
 
       private
+      def build_map
+        Dir[File.join(haml_from, "**/*.haml")].map do |src|
+          basename = File.basename(src, ".haml")
+          dir      = File.dirname(src).sub(/^#{haml_from}/, haml_to)
+          dest = File.join(dir, basename + ".html")
+          [src, dest]
+        end
+      end
+
       def haml_from
         @options.has_key?(:from) ? File.join(app_dir, @options[:from]) : File.join(app_dir, 'haml')
       end
