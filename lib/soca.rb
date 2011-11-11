@@ -8,6 +8,9 @@ $LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__))))
 
 module Soca
   VERSION = File.read(File.expand_path("../VERSION", File.dirname(__FILE__))).chomp
+  autoload :Pusher, 'soca/pusher'
+  autoload :CLI, 'soca/cli'
+  autoload :Plugin, 'soca/plugin'
 
   class << self
     attr_accessor :debug
@@ -28,7 +31,3 @@ module Soca
     @logger
   end
 end
-
-require 'soca/pusher'
-require 'soca/cli'
-require 'soca/plugin'
