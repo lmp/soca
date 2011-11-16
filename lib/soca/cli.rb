@@ -108,7 +108,11 @@ module Soca
 
     desc 'push [ENV]', 'builds and pushes the current app to couchdb'
     def push(env = 'default')
-      pusher(env).push!
+      begin
+        pusher(env).push!
+      rescue => e
+        say "Error running push: #{e}", :red
+      end
     end
 
     desc 'build [ENV]', 'builds the app as a ruby hash and outputs it to stdout'
