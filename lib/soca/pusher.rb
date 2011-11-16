@@ -111,14 +111,14 @@ module Soca
     end
 
     def run_hook_file!(hook)
-      hook_file_path = File.join(app_dir, 'hooks', "#{hook}.rb")
-      if File.readable? hook_file_path
-        logger.debug "running hook: #{hook} (#{hook_file_path})"
-        Dir.chdir(app_dir) do
-          instance_eval(File.read(hook_file_path), hook_file_path, 1)
+      hook_files = Dir[File.join(app_dir, 'hooks', "#{hook}{.rb,.d/*.rb}")]
+      logger.debug "running hook: #{hook} (#{hook_files.join(',')})"
+      Dir.chdir(app_dir) do
+        hook_files.each do |hook_file|
+          instance_eval(File.read(hook_file), hook_file, 1)
         end
-        logger.debug "finished hook: #{hook} (#{hook_file_path})"
       end
+      logger.debug "finished hook: #{hook} (#{hook_files.join(',')})"
     end
 
     def plugin(plugin_name, options = {})
