@@ -150,8 +150,10 @@ module Soca
         while !parts.empty?
           part = parts.shift
           if parts.empty?
+            raise "the filename #{path} conflicts with a folder of that name" if current_hash[part].class == Hash
             current_hash[part] = file_data.force_encoding("UTF-8")
           else
+            raise "the path of #{path} conflicts with a javascript file" if current_hash[part].class == String
             current_hash[part] ||= {}
             current_hash = current_hash[part]
           end
