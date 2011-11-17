@@ -25,16 +25,20 @@ module Soca
         Soca.logger.debug "CoffeeScript vars: #{vars.inspect}"
 
         build_files(build_map) do |src, dest|
+          bare = false
+          cs_opts = {}
+
           Soca.logger.debug "Running #{src} through CoffeeScript."
-          if /#{Regexp.escape(app_dir)}\/db\// === dest
-            options = vars.merge(:bare => true)
-          else
-            options = vars.dup
+          vars[:config]["bareCoffeeScriptDirectories"].each do |bare_dir|
+            dir = File.join(app_dir, bare_dir)
+            re = /#{Regexp.escape(dir)}/
+            bare = true if re === dest
+            cs_opts = vars.merge(:bare => bare)
           end
           File.open(dest, 'w') do |f|
-            f << ::CoffeeScript.compile(File.read(src), options)
+            f << ::CoffeeScript.compile(File.read(src), cs_opts)
           end
-          Soca.logger.debug "Wrote to #{dest}"
+          Soca.logger.debug "Wrote #{bare ? "(bare) " : ""}to #{dest}"
         end
       end
 
