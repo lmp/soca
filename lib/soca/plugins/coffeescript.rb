@@ -26,8 +26,13 @@ module Soca
 
         build_files(build_map) do |src, dest|
           Soca.logger.debug "Running #{src} through CoffeeScript."
+          if /#{Regexp.escape(app_dir)}\/db\// === dest
+            options = vars.merge(:bare => true)
+          else
+            options = vars.dup
+          end
           File.open(dest, 'w') do |f|
-            f << ::CoffeeScript.compile(File.read(src), vars)
+            f << ::CoffeeScript.compile(File.read(src), options)
           end
           Soca.logger.debug "Wrote to #{dest}"
         end
@@ -48,7 +53,7 @@ module Soca
       end
 
       def coffeescript_to
-        @options.has_key?(:to) ? File.join(app_dir, @options[:to]) : File.join(app_dir, 'js')
+        @options.has_key?(:to) ? File.join(app_dir, @options[:to]) : app_dir
       end
 
     end
