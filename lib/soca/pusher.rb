@@ -139,9 +139,9 @@ module Soca
           return hash
         end
       end
-      if base_path =~ /^_attachments/
+      if base_path =~ %r{(?:^|/)_attachments/}
         hash['_attachments'] ||= {}
-        hash['_attachments'][base_path.gsub(/_attachments\//, '')] = make_attachment(path, file_data)
+        hash['_attachments'][base_path.gsub(%r{(?:^|/)_attachments/}, '')] = make_attachment(path, file_data)
       elsif base_path == 'rewrites.js'
         hash['rewrites'] = JSON.parse(file_data)
       else
